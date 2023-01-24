@@ -9,6 +9,13 @@ const getStatsByRace = async (player, server) => {
 
     if (data.length === 0) {
       response = await fetch(
+        `https://statistic-service.w3champions.com/api/players/${player}/race-stats?gateWay=${server}&season=13`
+      );
+      data = await response.json();
+    }
+
+    if (data.length === 0) {
+      response = await fetch(
         `https://statistic-service.w3champions.com/api/players/${player}/race-stats?gateWay=${server}&season=12`
       );
       data = await response.json();
