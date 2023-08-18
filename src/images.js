@@ -245,6 +245,8 @@ const loadImagesCanvas = async () => {
 
 loadImagesCanvas().then(() => {
   console.log(hero);
+}).catch((err) => {
+  console.log(err)
 });
 
 module.exports = hero;
