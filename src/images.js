@@ -239,7 +239,9 @@ hero.SILVER = __dirname + "/assets/leagueIcons/silver.png";
 
 const loadImagesCanvas = async () => {
   for (const property in hero) {
-    hero[property] = await loadImage(hero[property]);
+    setTimeout(async () => {
+      hero[property] = await loadImage(hero[property]);
+    }, 1000)
   }
 };
 
