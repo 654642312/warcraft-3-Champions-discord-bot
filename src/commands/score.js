@@ -18,7 +18,7 @@ const getScoreAmericaAndEurope = async (message, playerOne, playerTwo, server) =
 	playerTwo = playerTwo.replace(/%23/gi, "#");
 	const score = getScoreOfMatches(matches.matches, playerOne, playerTwo);
 	const image = await canvasScore(score);
-  return message.channel.send(image).then(() => {
+  return message.channel.send({ files: [image] }).then(() => {
 		return message.channel.send(`type !gamesid ${playerOne.replace(/#\w+/gi, "")} vs ${playerTwo.replace(/#\w+/gi, "")} to see the id of each game`);
 	});
   
