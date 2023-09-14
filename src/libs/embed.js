@@ -632,7 +632,7 @@ const matchesEmbed = (matchesList, message) => {
 };
 
 const helpEmbed = (message) => {
-  let embed = new Discord.EmbedBuilder();
+  let embed = new Discord.MessageEmbed();
   embed.setColor("#0099ff").setTitle("Commands").addFields(
     {
       name: "!herolist",
