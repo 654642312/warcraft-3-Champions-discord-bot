@@ -149,7 +149,7 @@ module.exports = {
         return message.channel.send("stats not found");
       }
       const image = canvasHeroesStats(firstHeroes, secondHeroes, stats);
-      return message.channel.send(image);
+      return message.channel.send({ files: [image] });
     } catch (err) {
       console.log(err);
     }
