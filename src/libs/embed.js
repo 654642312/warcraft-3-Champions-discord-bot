@@ -130,7 +130,7 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
           `[Click here](https://www.w3champions.com/player/${battleTag})`
         );
 
-      return message.channel.send(newEmbed);
+      return message.channel.send({embeds: [newEmbed]});
     }
 
     if (stats.race === 1) {
@@ -269,7 +269,7 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
         `[Click here](https://www.w3champions.com/player/${battleTag})`
       );
 
-    return message.channel.send(embed);
+    return message.channel.send({embeds: [embed]});
   } catch (error) {
     console.log(error);
     return message.channel.send(
@@ -382,7 +382,7 @@ const playerByName = async (name, stats, message, indexLeague) => {
           `[Click here](https://www.w3champions.com/player/${battleTag})`
         );
 
-      return message.channel.send(newEmbed);
+      return message.channel.send({embeds: [newEmbed]});
     }
 
     embed.addField("Rank", stats.rankNumber, true);
@@ -525,7 +525,7 @@ const playerByName = async (name, stats, message, indexLeague) => {
         `[Click here](https://www.w3champions.com/player/${battleTag})`
       );
 
-    return message.channel.send(embed);
+    return message.channel.send({embeds: [embed]});
   } catch (error) {
     console.log(error);
     return message.channel.send(
@@ -551,7 +551,7 @@ const matchEmbed = (player, message) => {
       },
       { name: "Map", value: player.map }
     );
-  message.channel.send(embed);
+  message.channel.send({embeds: [embed]});
 };
 
 const rankingEmbed = (ranking, message, img) => {
@@ -597,19 +597,19 @@ const rankingEmbed = (ranking, message, img) => {
   });
 
   if (embed.fields.length !== 0) {
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
   if (embed2.fields.length !== 0) {
     embed2.setColor("#0099ff");
-    message.channel.send(embed2);
+    message.channel.send({embeds: [embed2]});
   }
   if (embed3.fields.length !== 0) {
     embed3.setColor("#0099ff");
-    message.channel.send(embed3);
+    message.channel.send({embeds: [embed3]});
   }
   if (embed4.fields.length !== 0) {
     embed4.setColor("#0099ff");
-    message.channel.send(embed4);
+    message.channel.send({embeds: [embed4]});
   }
 };
 
@@ -628,7 +628,7 @@ const matchesEmbed = (matchesList, message) => {
         matchesList.matches[i].teams[1].players[0].battleTag,
     });
   }
-  message.channel.send(embed);
+  message.channel.send({embeds: [embed]});
 };
 
 const helpEmbed = (message) => {
