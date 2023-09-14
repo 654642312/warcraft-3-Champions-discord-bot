@@ -99,7 +99,7 @@ module.exports = {
           return message.channel.send("stats not found");
         }
         const image = canvasHeroesStats(firstHeroes, secondHeroes, stats);
-        return message.channel.send(image);
+        return message.channel.send({ files: [image] });
 
       }
 
@@ -125,7 +125,7 @@ module.exports = {
           return message.channel.send("stats not found");
         }
         const image = canvasHeroesStats(firstHeroes, secondHeroes, stats);
-        return message.channel.send(image);
+        return message.channel.send({ files: [image] });
       }
 
       for (let i = 0; i < args.length; i++) {
