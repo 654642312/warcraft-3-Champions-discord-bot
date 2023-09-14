@@ -659,7 +659,7 @@ const helpEmbed = (message) => {
       value: "Print winrates of all matchups on a specific map.",
     },
   );
-  message.channel.send(embed);
+  message.channel.send({embed: embed});
 };
 
 module.exports = {
