@@ -632,7 +632,7 @@ const matchesEmbed = (matchesList, message) => {
 };
 
 const helpEmbed = (message) => {
-  let embed = new Discord.MessageEmbed();
+  let embed = new Discord.EmbedBuilder();
   embed.setColor("#0099ff").setTitle("Commands").addFields(
     {
       name: "!herolist",
@@ -659,7 +659,7 @@ const helpEmbed = (message) => {
       value: "Print winrates of all matchups on a specific map.",
     },
   );
-  message.channel.send({embed: embed});
+  message.channel.send({embeds: [embed]});
 };
 
 module.exports = {
