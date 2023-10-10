@@ -40,7 +40,7 @@ module.exports = {
 					embed.addField(property, heroesNames[property], true);
 				}
 			}
-			return message.channel.send(embed);
+			return message.channel.send({embeds: [embed]});
 		} catch (err) {
 			console.log(err);
 		}
