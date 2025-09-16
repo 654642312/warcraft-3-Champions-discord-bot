@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const { getLeagues } = require("../services/");
-const fetch = require("node-fetch");
+const fetch = require("node-fetch").default;
 
 const emojiUnd = "<:Undead:771391362595160084>";
 const emojiOrc = "<:ORC:771391078833061948>";
