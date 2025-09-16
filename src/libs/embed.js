@@ -26,9 +26,10 @@ const raceOfPicture = {
   race16: "TOTAL",
 };
 
-const playerEmbed = async (name, stats, message, indexLeague) => {
+const playerEmbed = async (name, stats, indexLeague) => {
   try {
-    let embed = new Discord.MessageEmbed();
+    console.log(stats);
+    let embed = new EmbedBuilder();
     let avatar = " ";
     let race;
     let leagueName;
@@ -58,10 +59,13 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
       leagueName = emojiBronze;
     }
 
-    embed.addField("Rank", stats.rankNumber, true);
-    embed.addField("Mode", "1v1", true);
-    embed.addField("League", leagueName, true);
+    embed.addFields(
+      { name: "Rank", value: stats.rankNumber.toString(), inline: true },
+      { name: "Mode", value: "1v1", inline: true },
+      { name: "League", value: leagueName, inline: true }
+    );
 
+    console.log("das31212312");
     if (stats.race === 1) {
       iconRace = emojiHum;
       avatar =
@@ -118,7 +122,7 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
     battleTag = battleTag.replace(/#/gi, "%23");
 
     if (avatar === " ") {
-      let newEmbed = new Discord.MessageEmbed();
+      let newEmbed = new EmbedBuilder();
 
       newEmbed
         .setColor("#0099ff")
@@ -174,12 +178,12 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
         },
         {
           name: "Mmr",
-          value: stats.player.mmr,
+          value: stats.player.mmr.toString(),
           inline: true,
         },
         {
           name: "RP",
-          value: Math.floor(stats.rankingPoints),
+          value: Math.floor(stats.rankingPoints).toString(),
           inline: true,
         }
       );
@@ -259,17 +263,16 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
         }
       );
     }
+    embed.setColor("#0099ff");
 
-    embed
-      .setColor("#0099ff")
-      .setTitle(stats.player.name + " " + iconRace)
-      .setThumbnail(image)
-      .addField(
-        "View profile in w3champions",
-        `[Click here](https://www.w3champions.com/player/${battleTag})`
-      );
+    embed.setTitle(stats.player.name + " " + iconRace);
+    embed.setThumbnail(image);
+    embed.addFields({
+      name: "View profile in w3champions",
+      value: `[Click here](https://www.w3champions.com/player/${battleTag})`,
+    });
 
-    return message.channel.send({ embeds: [embed] });
+    return embed;
   } catch (error) {
     console.log(error);
     return message.channel.send(
