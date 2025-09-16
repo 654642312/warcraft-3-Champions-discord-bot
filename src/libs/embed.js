@@ -631,7 +631,7 @@ const matchesEmbed = (matchesList, message) => {
   message.channel.send({ embeds: [embed] });
 };
 
-const helpEmbed = (message) => {
+const helpEmbed = () => {
   let embed = new EmbedBuilder();
   embed.setColor("#0099ff").setTitle("Commands").addFields(
     {
@@ -662,7 +662,8 @@ const helpEmbed = (message) => {
       value: "Print winrates of all matchups on a specific map.",
     }
   );
-  message.channel.send({ embeds: [embed] });
+
+  return embed;
 };
 
 module.exports = {

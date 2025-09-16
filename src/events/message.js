@@ -2,9 +2,9 @@ const { prefix } = require("../config.json");
 const channels = require("../channels");
 const { Events } = require("discord.js");
 
-const channelAllowed = (message) => {
+const channelAllowed = (channelId) => {
   for (let i = 0; i < channels.length; i++) {
-    if (message.channel.id === channels[i]) {
+    if (channelId === channels[i]) {
       return true;
     }
   }
@@ -12,23 +12,17 @@ const channelAllowed = (message) => {
 };
 
 const eventsMessage = (client) => {
-  client.on(Events.MessageCreate, async (message) => {
+  client.on(Events.InteractionCreate, async (interaction) => {
     try {
-      if (!message.content.startsWith(prefix)) return;
-      if (!channelAllowed(message)) return;
+      if (!interaction.isChatInputCommand()) return;
+      if (!channelAllowed(interaction.channel.id)) return;
 
-      let args = message.content.slice(prefix.length).trim().split(/ +/g);
-      let command = args.shift().toLowerCase();
+      const command = client.commands.get(interaction.commandName);
 
-      let commandFound =
-        client.commands.get(command) ||
-        client.commands.find((c) => c.alias && c.alias.includes(command));
-
-      if (args.length > 0)
-        args.forEach((arg, i) => (args[i] = args[i].toLowerCase()));
-      if (!commandFound) return;
-
-      return commandFound.run(client, message, args);
+      if (!command) {
+        return;
+      }
+      await command.execute(interaction);
     } catch (err) {
       console.log(err);
     }
