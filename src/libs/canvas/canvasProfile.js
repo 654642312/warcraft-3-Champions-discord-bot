@@ -1,7 +1,7 @@
 const herosImages = require("../../images");
 const { MessageAttachment } = require("discord.js");
 const Canvas = require("canvas");
-const fetch = require("node-fetch");
+const fetch = require("node-fetch").default;
 const getStatsByMode = require("../../services/getstatsbymode");
 const getStatsByRace = require("../../services/getstatsbyrace");
 

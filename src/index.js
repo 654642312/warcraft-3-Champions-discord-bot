@@ -7,35 +7,53 @@ app.get("/", (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log("server on port 3000")
-
+  console.log("server on port 3000");
 });
 
 const { config } = require("dotenv");
 
 config();
 
-const { Client, Collection, Intents } = require("discord.js");
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  Events,
+  Partials,
+} = require("discord.js");
 const eventsMessage = require("./events/message");
 const fs = require("fs");
 const path = require("path");
 
-const intents = new Intents(513);
-const client = new Client({ intents });
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
+  partials: [
+    Partials.Channel,
+    Partials.User,
+    Partials.Message,
+    Partials.GuildMember,
+  ],
+});
 
 client.commands = new Collection();
 
-let files = fs.readdirSync(path.join(__dirname, "commands")).filter(file => file.endsWith(".js"));
+let files = fs
+  .readdirSync(path.join(__dirname, "commands"))
+  .filter((file) => file.endsWith(".js"));
 
 for (let file of files) {
   let command = require("./commands/" + file);
   client.commands.set(command.name, command);
 }
 
-client.on("ready", () => {
+client.on(Events.ClientReady, () => {
   client.user.setActivity("!help");
   console.log("bot is ready!!!!!!!!!");
 });
 
 eventsMessage(client);
-client.login(process.env.DISCORD_TOKEN)
+client.login(process.env.DISCORD_TOKEN);

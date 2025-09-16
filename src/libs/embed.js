@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { getLeagues } = require("../services/");
 const fetch = require("node-fetch");
 
@@ -130,7 +130,7 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
           `[Click here](https://www.w3champions.com/player/${battleTag})`
         );
 
-      return message.channel.send({embeds: [newEmbed]});
+      return message.channel.send({ embeds: [newEmbed] });
     }
 
     if (stats.race === 1) {
@@ -269,7 +269,7 @@ const playerEmbed = async (name, stats, message, indexLeague) => {
         `[Click here](https://www.w3champions.com/player/${battleTag})`
       );
 
-    return message.channel.send({embeds: [embed]});
+    return message.channel.send({ embeds: [embed] });
   } catch (error) {
     console.log(error);
     return message.channel.send(
@@ -382,7 +382,7 @@ const playerByName = async (name, stats, message, indexLeague) => {
           `[Click here](https://www.w3champions.com/player/${battleTag})`
         );
 
-      return message.channel.send({embeds: [newEmbed]});
+      return message.channel.send({ embeds: [newEmbed] });
     }
 
     embed.addField("Rank", stats.rankNumber, true);
@@ -525,7 +525,7 @@ const playerByName = async (name, stats, message, indexLeague) => {
         `[Click here](https://www.w3champions.com/player/${battleTag})`
       );
 
-    return message.channel.send({embeds: [embed]});
+    return message.channel.send({ embeds: [embed] });
   } catch (error) {
     console.log(error);
     return message.channel.send(
@@ -551,7 +551,7 @@ const matchEmbed = (player, message) => {
       },
       { name: "Map", value: player.map }
     );
-  message.channel.send({embeds: [embed]});
+  message.channel.send({ embeds: [embed] });
 };
 
 const rankingEmbed = (ranking, message, img) => {
@@ -597,19 +597,19 @@ const rankingEmbed = (ranking, message, img) => {
   });
 
   if (embed.fields.length !== 0) {
-    message.channel.send({embeds: [embed]});
+    message.channel.send({ embeds: [embed] });
   }
   if (embed2.fields.length !== 0) {
     embed2.setColor("#0099ff");
-    message.channel.send({embeds: [embed2]});
+    message.channel.send({ embeds: [embed2] });
   }
   if (embed3.fields.length !== 0) {
     embed3.setColor("#0099ff");
-    message.channel.send({embeds: [embed3]});
+    message.channel.send({ embeds: [embed3] });
   }
   if (embed4.fields.length !== 0) {
     embed4.setColor("#0099ff");
-    message.channel.send({embeds: [embed4]});
+    message.channel.send({ embeds: [embed4] });
   }
 };
 
@@ -628,15 +628,16 @@ const matchesEmbed = (matchesList, message) => {
         matchesList.matches[i].teams[1].players[0].battleTag,
     });
   }
-  message.channel.send({embeds: [embed]});
+  message.channel.send({ embeds: [embed] });
 };
 
 const helpEmbed = (message) => {
-  let embed = new Discord.MessageEmbed();
+  let embed = new EmbedBuilder();
   embed.setColor("#0099ff").setTitle("Commands").addFields(
     {
       name: "!herolist",
-      value: "Use this command first to discover how each hero should be written or abbreviated so the bot understands it.",
+      value:
+        "Use this command first to discover how each hero should be written or abbreviated so the bot understands it.",
     },
     {
       name: "!profile [player]",
@@ -644,11 +645,13 @@ const helpEmbed = (message) => {
     },
     {
       name: "!mh [player]",
-      value: "Print a list of the 24 most recent games in a player's match history including Match IDs.",
+      value:
+        "Print a list of the 24 most recent games in a player's match history including Match IDs.",
     },
     {
       name: "!score [player] vs [player]",
-      value: "Print aggregated matches between two players. !detail [match ID] Print details about a match. Find match ID with !mh or on https://w3champions.com/",
+      value:
+        "Print aggregated matches between two players. !detail [match ID] Print details about a match. Find match ID with !mh or on https://w3champions.com/",
     },
     {
       name: "!statshero [hero1] [hero2] [hero3] vs [hero1] [hero2] [hero3]",
@@ -657,9 +660,9 @@ const helpEmbed = (message) => {
     {
       name: "!wr [map]",
       value: "Print winrates of all matchups on a specific map.",
-    },
+    }
   );
-  message.channel.send({embeds: [embed]});
+  message.channel.send({ embeds: [embed] });
 };
 
 module.exports = {
