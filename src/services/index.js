@@ -33,71 +33,24 @@ const getStats = async (player, server) => {
 
 const getPlayerByName = async (player, server) => {
   let response = await fetch(
-    `https://statistic-service.w3champions.com/api/ladder/search?gateWay=${server}&searchFor=${player}&season=${process.env.SEASON}`
+    `https://statistic-service.w3champions.com/api/ladder/search?gateWay=${server}&searchFor=${player}&season=${process.env.SEASON}&gameMode=1`
   );
   let data = await response.json();
 
-  let playerObject = undefined;
-  let playersRp = [];
-  let players = [];
-  let rp;
   player = player.toLowerCase();
+  let playerFound = null;
 
-  for (let i = 0; i < data.length; i++) {
-    if (
-      player.substring(0, 2) ===
-        data[i].player.playerIds[0].name.toLowerCase().substring(0, 2) ||
-      player === data[i].player.playerIds[0].battleTag.toLowerCase()
-    ) {
-      playerObject = data[i];
+  if (data.length === 0) return null;
+
+  for (const d of data) {
+    if (d.player.name.toLowerCase() === player) {
+      playerFound = d.player1Id;
       break;
     }
   }
 
-  for (let i = 0; i < data.length; i++) {
-    if (
-      player.substring(0, 2) ===
-        data[i].player.playerIds[0].name.toLowerCase().substring(0, 2) ||
-      player === data[i].player.playerIds[0].battleTag.toLowerCase()
-    ) {
-      players.push(data[i]);
-    }
-  }
-
-  for (let i = 0; i < data.length; i++) {
-    if (
-      player.toLowerCase() === data[i].player.playerIds[0].name.toLowerCase() ||
-      player.toLowerCase() ===
-        data[i].player.playerIds[0].battleTag.toLowerCase()
-    ) {
-      playerObject = data[i];
-      break;
-    }
-  }
-
-  if (players.length > 1) {
-    for (let i = 0; i < data.length; i++) {
-      playersRp.push(data[i].rankingPoints);
-    }
-    rp = Math.max(...playersRp);
-    for (let i = 0; i < data.length; i++) {
-      if (
-        player.substring(0, 2) ==
-          data[i].player.playerIds[0].name.toLowerCase().substring(0, 2) ||
-        player == data[i].player.playerIds[0].battleTag.toLowerCase()
-      ) {
-        if (data[i].rankingPoints === rp) {
-          playerObject = data[i];
-          break;
-        }
-      }
-    }
-  }
-
-  if (playerObject === undefined) {
-    return data[0];
-  }
-  return playerObject;
+  const races = data.filter(d => d.player1Id === playerFound)
+  return races;
 };
 
 const getPlayerByJustName = async (player, server) => {
