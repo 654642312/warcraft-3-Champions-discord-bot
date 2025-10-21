@@ -36,6 +36,6 @@ client.on("ready", () => {
   client.user.setActivity("!help");
   console.log("bot is ready!!!!!!!!!");
 });
-
+console.log(process.env.DISCORD_TOKEN);
 eventsMessage(client);
 client.login(process.env.DISCORD_TOKEN)
