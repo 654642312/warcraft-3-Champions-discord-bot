@@ -40,6 +40,6 @@ client.on("ready", () => {
 eventsMessage(client);
 client.login(process.env.DISCORD_TOKEN).then(res => {
   console.log(res)
-}).error(err => {
+}).catch(err => {
   console.log(err)
 })
