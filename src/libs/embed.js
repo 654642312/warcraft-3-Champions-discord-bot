@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const { getLeagues } = require("../services/");
+const { displayWinrate } = require("./helper");
 const fetch = require("node-fetch").default;
 
 const emojiUnd = "<:Undead:771391362595160084>";
@@ -30,50 +31,115 @@ const playerEmbed = async (name, races, indexLeague) => {
   try {
     let embed = new EmbedBuilder();
 
-    /*
-    if (avatar === " ") {
-      let newEmbed = new EmbedBuilder();
+    embed.setTitle(races[0].player1Id);
+    embed.setColor("#0099ff");
 
-      newEmbed
-        .setColor("#0099ff")
-        .setTitle(stats.player.name)
-        .setThumbnail("https://www.w3champions.com/img/all.d725e22d.png")
-        .addField("Message", "You have to play 5 games, GL HF!")
-        .addField(
-          "View profile in w3champions",
-          `[Click here](https://www.w3champions.com/player/${battleTag})`
-        );
+    let tag = races[0].player1Id;
+    tag = tag.replace(/#/gi, "%23");
 
-      return message.channel.send({ embeds: [newEmbed] });
+    const response = await fetch(
+      `https://statistic-service.w3champions.com/api/personal-settings/${tag}`
+    );
+
+    const personalSettings = await response.json();
+
+    let image;
+
+    if (personalSettings.profilePicture.isClassic) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/classic/${
+        raceOfPicture["race" + personalSettings.profilePicture.race]
+      }_${personalSettings.profilePicture.pictureId}.jpg`;
     }
-*/
+    if (
+      raceOfPicture["race" + personalSettings.profilePicture.race] === "SPECIAL"
+    ) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/specialAvatars/SPECIAL_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+    if (
+      personalSettings.profilePicture.isClassic === false &&
+      raceOfPicture["race" + personalSettings.profilePicture.race] !== "SPECIAL"
+    ) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/${
+        raceOfPicture["race" + personalSettings.profilePicture.race]
+      }_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+
+    embed.setThumbnail(image);
+
     races.map((race) => {
+      console.log(race);
       if (race.race === 1) {
-        embed.addFields({ name: `Human`, value: "W/L", inline: true });
+        embed.addFields({
+          name: `Human`,
+          value: `**MMR:**\`${
+            race.player.mmr
+          }\`\n**Win rate:**\`${displayWinrate(
+            race.player.winrate
+          )}\`\n**W/L:**\`${race.player.wins}/${
+            race.player.losses
+          }\`\n**Games:**\`${race.player.games}\``,
+          inline: true,
+        });
       }
       if (race.race === 2) {
-        embed.addFields({ name: `Orc`, value: "W/L", inline: true });
+        embed.addFields({
+          name: `Orc`,
+          value: `**MMR:**\`${
+            race.player.mmr
+          }\`\n**Win rate:**\`${displayWinrate(
+            race.player.winrate
+          )}\`\n**W/L:**\`${race.player.wins}/${
+            race.player.losses
+          }\`\n**Games:**\`${race.player.games}\``,
+          inline: true,
+        });
       }
       if (race.race === 4) {
-        embed.addFields({ name: `Night Elf`, value: "W/L", inline: true });
+        embed.addFields({
+          name: `Night Elf`,
+          value: `**MMR:**\`${
+            race.player.mmr
+          }\`\n**Win rate:**\`${displayWinrate(
+            race.player.winrate
+          )}\`\n**W/L:**\`${race.player.wins}/${
+            race.player.losses
+          }\`\n**Games:**\`${race.player.games}\``,
+          inline: true,
+        });
       }
-      if(race.race === 8) {
-        embed.addFields({ name: `Undead`, value: "W/L", inline: true });
+      if (race.race === 8) {
+        embed.addFields({
+          name: `Undead`,
+          value: `**MMR:**\`${
+            race.player.mmr
+          }\`\n**Win rate:**\`${displayWinrate(
+            race.player.winrate
+          )}\`\n**W/L:**\`${race.player.wins}/${
+            race.player.losses
+          }\`\n**Games:**\`${race.player.games}\``,
+          inline: true,
+        });
       }
-      if(race.race === 0) {
-        embed.addFields({ name: `Random`, value: "W/L", inline: true });
+      if (race.race === 0) {
+        embed.addFields({
+          name: `Random`,
+          value: `**MMR:**\`${
+            race.player.mmr
+          }\`\n**Win rate:**\`${displayWinrate(
+            race.player.winrate
+          )}\`\n**W/L:**\`${race.player.wins}/${
+            race.player.losses
+          }\`\n**Games:**\`${race.player.games}\``,
+          inline: true,
+        });
       }
     });
 
-    embed.setColor("#0099ff");
-    /*
-    embed.setTitle(races[0].player.name + " " + iconRace);
-    embed.setThumbnail(image);
     embed.addFields({
       name: "View profile in w3champions",
-      value: `[Click here](https://www.w3champions.com/player/${battleTag})`,
+      value: `[Click here](https://www.w3champions.com/player/${races[0].player1Id})`,
     });
-*/
+
     return embed;
   } catch (error) {
     console.log(error);

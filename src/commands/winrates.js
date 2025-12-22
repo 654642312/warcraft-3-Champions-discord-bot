@@ -76,6 +76,7 @@ module.exports = {
 				image = canvasWinrates(ratio[1], ratio[2], ratio[3], ratio[4], maps[map]);
 			} else if (typeof mmrOfLeagues[mmr] !== "number") {
 				ratio = getRatio(undefined, mmr, dataOfWinrate);
+				console.log(ratio)
 				image = canvasWinrates(ratio[1], ratio[2], ratio[3], ratio[4], maps[mmr]);
 			} else {
 				ratio = getRatio(mmr, undefined, dataOfWinrate);

@@ -22,7 +22,6 @@ module.exports = (human, orc, undead, nightElf, map) => {
 	ctx.drawImage(herosImages[map], 400, 0, 200, 200);
 
 	//races images
-
 	ctx.drawImage(herosImages[`race${human.race}`], 0, 400, 200, 200);
 	ctx.drawImage(herosImages[`race${orc.race}`], 0, 600, 200, 200);
 	ctx.drawImage(herosImages[`race${undead.race}`], 0, 800, 200, 200);

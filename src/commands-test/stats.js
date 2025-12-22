@@ -18,7 +18,6 @@ module.exports = {
       let indexLeague = 2;
 
       let objectPlayer = await showStats(player, 20);
-
       const embed = await playerEmbed(
         objectPlayer.player,
         objectPlayer.races,
