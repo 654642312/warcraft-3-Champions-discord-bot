@@ -31,25 +31,29 @@ const getStats = async (player, server) => {
   return data;
 };
 
-const getPlayerByName = async (player, server) => {
-  let response = await fetch(
+async function findW3CPlayer(player, server) {
+  const response = await fetch(
     `https://statistic-service.w3champions.com/api/ladder/search?gateWay=${server}&searchFor=${player}&season=${process.env.SEASON}&gameMode=1`
   );
+  const data = await response.json()
+
+  return data.map(d => {
+    return {
+      battleTag: d.player1Id
+    }
+  })
+}
+
+const getPlayerByName = async (player, server) => {
+  let response = await fetch(
+    `https://statistic-service.w3champions.com/api/players/${player.replace('#', '%23')}/game-mode-stats?gateWay=20&season=${process.env.SEASON}`
+  );
+  
   let data = await response.json();
-
-  player = player.toLowerCase();
-  let playerFound = null;
-
   if (data.length === 0) return null;
 
-  for (const d of data) {
-    if (d.player.name.toLowerCase() === player) {
-      playerFound = d.player1Id;
-      break;
-    }
-  }
+  const races = data.filter(d => d.gameMode === 1)
 
-  const races = data.filter(d => d.player1Id === playerFound)
   return races;
 };
 
@@ -238,4 +242,5 @@ module.exports = {
   getStatsHeros,
   getScore,
   getPlayerByJustName,
+  findW3CPlayer
 };

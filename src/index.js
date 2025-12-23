@@ -1,4 +1,5 @@
 const express = require("express");
+const { findW3CPlayer } = require("./services");
 
 const app = express();
 
@@ -26,6 +27,7 @@ const {
 const eventsMessage = require("./events/message");
 const fs = require("fs");
 const path = require("path");
+const { EUROPE_SERVER } = require("./libs/helper");
 
 const client = new Client({
   intents: [
@@ -41,20 +43,24 @@ const client = new Client({
   ],
 });
 
-client.commands = new Collection(); 
+client.commands = new Collection();
 
-const commandsPath = path.join(__dirname, 'commands-test');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandsPath = path.join(__dirname, "commands-test");
+const commandFiles = fs
+  .readdirSync(commandsPath)
+  .filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
+  const filePath = path.join(commandsPath, file);
+  const command = require(filePath);
 
-    if ('data' in command && 'execute' in command) {
-        client.commands.set(command.data.name, command);
-    } else {
-        console.log(`The Command ${filePath} is missing a required "data" or "execute" property.`)
-    }
+  if ("data" in command && "execute" in command) {
+    client.commands.set(command.data.name, command);
+  } else {
+    console.log(
+      `The Command ${filePath} is missing a required "data" or "execute" property.`
+    );
+  }
 }
 
 async function deployCommands() {
@@ -80,7 +86,7 @@ async function deployCommands() {
   console.log(`Started refreshing application slash commands globally.`);
 
   const data = await rest.put(
-    Routes.applicationCommands('751448461877968960'),
+    Routes.applicationCommands("751448461877968960"),
     { body: commands }
   );
 }
@@ -89,6 +95,34 @@ client.on(Events.ClientReady, async () => {
   client.user.setActivity("!help");
   await deployCommands();
   console.log("bot is ready!!!!!!!!!");
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isAutocomplete()) return;
+
+  if (interaction.commandName === "stats") {
+    const focusedValue = interaction.options.getFocused();
+
+     if (focusedValue.length < 3) {
+    return await interaction.respond([]);
+  }
+
+    try {
+      const players = await findW3CPlayer(focusedValue, EUROPE_SERVER);
+      const choices = players
+        .map((player) => {
+          return {
+            name: player.battleTag,
+            value: player.battleTag,
+          };
+        })
+        .slice(0, 25);
+      
+      await interaction.respond(choices);
+    } catch (error) {
+      console.log(error)
+    }
+  }
 });
 
 eventsMessage(client);

@@ -30,11 +30,10 @@ const raceOfPicture = {
 const playerEmbed = async (name, races, indexLeague) => {
   try {
     let embed = new EmbedBuilder();
-
-    embed.setTitle(races[0].player1Id);
+    embed.setTitle(name);
     embed.setColor("#0099ff");
 
-    let tag = races[0].player1Id;
+    let tag = name;
     tag = tag.replace(/#/gi, "%23");
 
     const response = await fetch(
@@ -67,17 +66,16 @@ const playerEmbed = async (name, races, indexLeague) => {
     embed.setThumbnail(image);
 
     races.map((race) => {
-      console.log(race);
       if (race.race === 1) {
         embed.addFields({
           name: `Human`,
           value: `**MMR:**\`${
-            race.player.mmr
+            race.mmr
           }\`\n**Win rate:**\`${displayWinrate(
-            race.player.winrate
-          )}\`\n**W/L:**\`${race.player.wins}/${
-            race.player.losses
-          }\`\n**Games:**\`${race.player.games}\``,
+            race.winrate
+          )}\`\n**W/L:**\`${race.wins}/${
+            race.losses
+          }\`\n**Games:**\`${race.games}\``,
           inline: true,
         });
       }
@@ -85,12 +83,12 @@ const playerEmbed = async (name, races, indexLeague) => {
         embed.addFields({
           name: `Orc`,
           value: `**MMR:**\`${
-            race.player.mmr
+            race.mmr
           }\`\n**Win rate:**\`${displayWinrate(
-            race.player.winrate
-          )}\`\n**W/L:**\`${race.player.wins}/${
-            race.player.losses
-          }\`\n**Games:**\`${race.player.games}\``,
+            race.winrate
+          )}\`\n**W/L:**\`${race.wins}/${
+            race.losses
+          }\`\n**Games:**\`${race.games}\``,
           inline: true,
         });
       }
@@ -98,12 +96,12 @@ const playerEmbed = async (name, races, indexLeague) => {
         embed.addFields({
           name: `Night Elf`,
           value: `**MMR:**\`${
-            race.player.mmr
+            race.mmr
           }\`\n**Win rate:**\`${displayWinrate(
-            race.player.winrate
-          )}\`\n**W/L:**\`${race.player.wins}/${
-            race.player.losses
-          }\`\n**Games:**\`${race.player.games}\``,
+            race.winrate
+          )}\`\n**W/L:**\`${race.wins}/${
+            race.losses
+          }\`\n**Games:**\`${race.games}\``,
           inline: true,
         });
       }
@@ -111,12 +109,12 @@ const playerEmbed = async (name, races, indexLeague) => {
         embed.addFields({
           name: `Undead`,
           value: `**MMR:**\`${
-            race.player.mmr
+            race.mmr
           }\`\n**Win rate:**\`${displayWinrate(
-            race.player.winrate
-          )}\`\n**W/L:**\`${race.player.wins}/${
-            race.player.losses
-          }\`\n**Games:**\`${race.player.games}\``,
+            race.winrate
+          )}\`\n**W/L:**\`${race.wins}/${
+            race.losses
+          }\`\n**Games:**\`${race.games}\``,
           inline: true,
         });
       }
@@ -124,12 +122,12 @@ const playerEmbed = async (name, races, indexLeague) => {
         embed.addFields({
           name: `Random`,
           value: `**MMR:**\`${
-            race.player.mmr
+            race.mmr
           }\`\n**Win rate:**\`${displayWinrate(
-            race.player.winrate
-          )}\`\n**W/L:**\`${race.player.wins}/${
-            race.player.losses
-          }\`\n**Games:**\`${race.player.games}\``,
+            race.winrate
+          )}\`\n**W/L:**\`${race.wins}/${
+            race.losses
+          }\`\n**Games:**\`${race.games}\``,
           inline: true,
         });
       }
@@ -137,7 +135,7 @@ const playerEmbed = async (name, races, indexLeague) => {
 
     embed.addFields({
       name: "View profile in w3champions",
-      value: `[Click here](https://www.w3champions.com/player/${races[0].player1Id})`,
+      value: `[Click here](https://www.w3champions.com/player/${tag})`,
     });
 
     return embed;
