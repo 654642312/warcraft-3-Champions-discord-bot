@@ -1,5 +1,9 @@
 const { getPlayerByName, participatedInSeason } = require("../services");
-const { playerByName, atGamemodesEmbed, RestGamemodesEmbed } = require("../libs/embed");
+const {
+  playerByName,
+  atGamemodesEmbed,
+  RestGamemodesEmbed,
+} = require("../libs/embed");
 const { OneVOneEmbed } = require("../libs/embed");
 const { findStatsAndGamemode } = require("../libs/showStats");
 const { SlashCommandBuilder } = require("discord.js");
@@ -59,11 +63,13 @@ module.exports = {
         )
     ),
 
-  async execute(interaction) {
+  async execute(interaction, battleTag, gameModeSelected) {
     try {
-      let player = interaction.options.getString("battletag");
+      let player = interaction?.options?.getString("battletag") || battleTag;
       const gameMode =
-        interaction.options.getString("gamemode") || ONE_V_ONE_GAMEMODE;
+        interaction?.options?.getString("gamemode") ||
+        gameModeSelected ||
+        ONE_V_ONE_GAMEMODE;
       let indexLeague = 2;
       const { stats, gameModeWithout4v4AtDuplicate: gameModes } =
         await findStatsAndGamemode(player, gameMode);
@@ -71,15 +77,15 @@ module.exports = {
       let embed = null;
       if (gameMode === ONE_V_ONE_GAMEMODE) {
         embed = await OneVOneEmbed(player, stats, indexLeague);
-      }
-
-      else if ([FOUR_V_FOUR_AT_GAMEMODE, MINIDOTA_AT_GAMEMODE].includes(gameMode)) {
+      } else if (
+        [FOUR_V_FOUR_AT_GAMEMODE, MINIDOTA_AT_GAMEMODE].includes(gameMode)
+      ) {
         embed = await atGamemodesEmbed(player, stats, indexLeague);
       } else {
         embed = await RestGamemodesEmbed(player, stats, indexLeague);
       }
       const seasons = await participatedInSeason(player);
-      
+
       const selectorMode = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
           .setCustomId(`stats_mode_${player}`)

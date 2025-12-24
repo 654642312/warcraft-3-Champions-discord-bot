@@ -98,14 +98,12 @@ client.on(Events.ClientReady, async () => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isAutocomplete()) return;
-
-  if (interaction.commandName === "stats") {
+  if (interaction.commandName === "stats" && interaction.isAutocomplete()) {
     const focusedValue = interaction.options.getFocused();
 
-     if (focusedValue.length < 3) {
-    return await interaction.respond([]);
-  }
+    if (focusedValue.length < 3) {
+      return await interaction.respond([]);
+    }
 
     try {
       const players = await findW3CPlayer(focusedValue, EUROPE_SERVER);
@@ -117,10 +115,23 @@ client.on(Events.InteractionCreate, async (interaction) => {
           };
         })
         .slice(0, 25);
-      
+
       await interaction.respond(choices);
     } catch (error) {
-      console.log(error)
+      console.log(error);
+    }
+  }
+
+  if (interaction.isStringSelectMenu()) {
+    if (interaction.customId.startsWith("stats_mode_")) {
+      const [unkwon, unkwn2, player] = interaction.customId.split("_");
+
+      const [gameModeSelected] = interaction.values[0].split("_");
+
+      const statsCommand = client.commands.get("stats");
+
+      statsCommand.execute(interaction, player, gameModeSelected);
+      return;
     }
   }
 });

@@ -11,17 +11,11 @@ async function findStatsAndGamemode(playerName, gameMode) {
 
   const stats = gameModeStats.filter((d) => d.gameMode == gameMode);
   const gameModes = gameModeStats.filter((d) => d.gameMode != gameMode);
-  const gameModeWithout4v4AtDuplicate = [];
-  let fourVFourAtAlreadyExists = false;
-  for (const mode of gameModes) {
-    if (mode.gameMode == FOUR_V_FOUR_AT_GAMEMODE && !fourVFourAtAlreadyExists) {
-      fourVFourAtAlreadyExists = true;
-      gameModeWithout4v4AtDuplicate.push(mode);
-    } else if (mode.gameMode != FOUR_V_FOUR_AT_GAMEMODE) {
-      gameModeWithout4v4AtDuplicate.push(mode);
-    }
-  }
-  return { stats, gameModeWithout4v4AtDuplicate };
+  const gameModeWithoutDuplicate = gameModes.filter(
+    (value, index, self) =>
+      index === self.findIndex((t) => t.gameMode === value.gameMode)
+  );
+  return { stats, gameModeWithoutDuplicate };
 }
 
 module.exports = { showStats, findStatsAndGamemode };
