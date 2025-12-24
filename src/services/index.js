@@ -35,24 +35,35 @@ async function findW3CPlayer(player, server) {
   const response = await fetch(
     `https://statistic-service.w3champions.com/api/ladder/search?gateWay=${server}&searchFor=${player}&season=${process.env.SEASON}&gameMode=1`
   );
-  const data = await response.json()
+  const data = await response.json();
 
-  return data.map(d => {
+  return data.map((d) => {
     return {
-      battleTag: d.player1Id
-    }
-  })
+      battleTag: d.player1Id,
+    };
+  });
+}
+
+async function participatedInSeason(player) {
+  const response = await fetch(
+    `https://statistic-service.w3champions.com/api/players/${player.replace("#","%23")}`
+  );
+  const data = await response.json();
+  return data.participatedInSeasons;
 }
 
 const getPlayerByName = async (player, server) => {
   let response = await fetch(
-    `https://statistic-service.w3champions.com/api/players/${player.replace('#', '%23')}/game-mode-stats?gateWay=20&season=${process.env.SEASON}`
+    `https://statistic-service.w3champions.com/api/players/${player.replace(
+      "#",
+      "%23"
+    )}/game-mode-stats?gateWay=20&season=${process.env.SEASON}`
   );
-  
+
   let data = await response.json();
   if (data.length === 0) return null;
 
-  const races = data.filter(d => d.gameMode === 1)
+  const races = data;
 
   return races;
 };
@@ -242,5 +253,6 @@ module.exports = {
   getStatsHeros,
   getScore,
   getPlayerByJustName,
-  findW3CPlayer
+  findW3CPlayer,
+  participatedInSeason,
 };

@@ -1,7 +1,7 @@
-const { getPlayerByName } = require("../services");
-const { playerByName } = require("../libs/embed");
-const { playerEmbed } = require("../libs/embed");
-const showStats = require("../libs/showStats");
+const { getPlayerByName, participatedInSeason } = require("../services");
+const { playerByName, atGamemodesEmbed, RestGamemodesEmbed } = require("../libs/embed");
+const { OneVOneEmbed } = require("../libs/embed");
+const { findStatsAndGamemode } = require("../libs/showStats");
 const { SlashCommandBuilder } = require("discord.js");
 const { ActionRowBuilder } = require("discord.js");
 const { StringSelectMenuBuilder } = require("discord.js");
@@ -21,6 +21,10 @@ const {
   FOUR_V_FOUR_LEGION_TD,
   MINIDOTA_GAMEMODE_NAME,
   MINIDOTA_GAMEMODE,
+  MINIDOTA_AT_GAMEMODE_NAME,
+  MINIDOTA_AT_GAMEMODE,
+  FOUR_V_FOUR_AT_GAMEMODE,
+  FOUR_V_FOUR_AT_GAMEMODE_NAME,
 } = require("../libs/helper");
 
 module.exports = {
@@ -43,72 +47,67 @@ module.exports = {
           { name: ONE_V_ONE_GAMEMODE_NAME, value: ONE_V_ONE_GAMEMODE },
           { name: TWO_V_TWO_GAMEMODE_NAME, value: TWO_V_TWO_GAMEMODE },
           { name: FOUR_V_FOUR_GAMEMODE_NAME, value: FOUR_V_FOUR_GAMEMODE },
+          {
+            name: FOUR_V_FOUR_AT_GAMEMODE_NAME,
+            value: FOUR_V_FOUR_AT_GAMEMODE,
+          },
           { name: ONE_V_ONE_ROC_GAMEMODE_NAME, value: ONE_V_ONE_ROC_GAMEMODE },
           { name: ONE_V_ONE_LEGION_TD_NAME, value: ONE_V_ONE_LEGION_TD },
           { name: FOUR_V_FOUR_LEGION_TD_NAME, value: FOUR_V_FOUR_LEGION_TD },
-          { name: MINIDOTA_GAMEMODE_NAME, value: MINIDOTA_GAMEMODE }
+          { name: MINIDOTA_GAMEMODE_NAME, value: MINIDOTA_GAMEMODE },
+          { name: MINIDOTA_AT_GAMEMODE_NAME, value: MINIDOTA_AT_GAMEMODE }
         )
     ),
 
   async execute(interaction) {
     try {
       let player = interaction.options.getString("battletag");
+      const gameMode =
+        interaction.options.getString("gamemode") || ONE_V_ONE_GAMEMODE;
       let indexLeague = 2;
+      const { stats, gameModeWithout4v4AtDuplicate: gameModes } =
+        await findStatsAndGamemode(player, gameMode);
 
+      let embed = null;
+      if (gameMode === ONE_V_ONE_GAMEMODE) {
+        embed = await OneVOneEmbed(player, stats, indexLeague);
+      }
+
+      else if ([FOUR_V_FOUR_AT_GAMEMODE, MINIDOTA_AT_GAMEMODE].includes(gameMode)) {
+        embed = await atGamemodesEmbed(player, stats, indexLeague);
+      } else {
+        embed = await RestGamemodesEmbed(player, stats, indexLeague);
+      }
+      const seasons = await participatedInSeason(player);
+      
       const selectorMode = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
           .setCustomId(`stats_mode_${player}`)
-          .setPlaceholder("1 VS 1")
-          .addOptions([
-            {
-              label: "Duelo 1v1",
-              value: "1v1",
-              description: "Estadísticas de 1 contra 1",
-            },
-            {
-              label: "Dobles 2v2",
-              value: "2v2",
-              description: "Estadísticas de 2 contra 2",
-            },
-            {
-              label: "Equipos 3v3",
-              value: "3v3",
-              description: "Estadísticas de 3 contra 3",
-            },
-          ])
+          .setPlaceholder(GAMEMODES[gameMode.toString()])
+          .addOptions(
+            gameModes.map((mode) => ({
+              label: GAMEMODES[mode.gameMode.toString()],
+              value: `${mode.gameMode.toString()}_${crypto.randomUUID()}`,
+            }))
+          )
       );
 
       const selectorSesson = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
           .setCustomId(`season_${player}`)
           .setPlaceholder("Season 22")
-          .addOptions([
-            {
-              label: "Duelo 1v1",
-              value: "1v1",
-              description: "Estadísticas de 1 contra 1",
-            },
-            {
-              label: "Dobles 2v2",
-              value: "2v2",
-              description: "Estadísticas de 2 contra 2",
-            },
-            {
-              label: "Equipos 3v3",
-              value: "3v3",
-              description: "Estadísticas de 3 contra 3",
-            },
-          ])
+          .addOptions(
+            seasons.map((season) => ({
+              label: season.id.toString(),
+              value: `season_${season.id}_${crypto.randomUUID()}`,
+            }))
+          )
       );
 
-      let objectPlayer = await showStats(player, 20);
-      const embed = await playerEmbed(
-        objectPlayer.player,
-        objectPlayer.races,
-        indexLeague
-      );
-
-      return interaction.reply({ embeds: [embed], components: [selectorMode, selectorSesson] });
+      return interaction.reply({
+        embeds: [embed],
+        components: [selectorMode, selectorSesson],
+      });
     } catch (err) {
       console.log(err);
     }

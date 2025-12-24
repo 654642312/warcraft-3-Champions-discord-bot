@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const { getLeagues } = require("../services/");
-const { displayWinrate } = require("./helper");
+const { displayWinrate, GAMEMODES } = require("./helper");
 const fetch = require("node-fetch").default;
 
 const emojiUnd = "<:Undead:771391362595160084>";
@@ -27,7 +27,7 @@ const raceOfPicture = {
   race16: "TOTAL",
 };
 
-const playerEmbed = async (name, races, indexLeague) => {
+async function OneVOneEmbed(name, races, indexLeague) {
   try {
     let embed = new EmbedBuilder();
     embed.setTitle(name);
@@ -69,65 +69,55 @@ const playerEmbed = async (name, races, indexLeague) => {
       if (race.race === 1) {
         embed.addFields({
           name: `Human`,
-          value: `**MMR:**\`${
-            race.mmr
-          }\`\n**Win rate:**\`${displayWinrate(
+          value: `**MMR:**\`${race.mmr}\`\n**Win rate:**\`${displayWinrate(
             race.winrate
-          )}\`\n**W/L:**\`${race.wins}/${
-            race.losses
-          }\`\n**Games:**\`${race.games}\``,
+          )}\`\n**W/L:**\`${race.wins}/${race.losses}\`\n**Games:**\`${
+            race.games
+          }\``,
           inline: true,
         });
       }
       if (race.race === 2) {
         embed.addFields({
           name: `Orc`,
-          value: `**MMR:**\`${
-            race.mmr
-          }\`\n**Win rate:**\`${displayWinrate(
+          value: `**MMR:**\`${race.mmr}\`\n**Win rate:**\`${displayWinrate(
             race.winrate
-          )}\`\n**W/L:**\`${race.wins}/${
-            race.losses
-          }\`\n**Games:**\`${race.games}\``,
+          )}\`\n**W/L:**\`${race.wins}/${race.losses}\`\n**Games:**\`${
+            race.games
+          }\``,
           inline: true,
         });
       }
       if (race.race === 4) {
         embed.addFields({
           name: `Night Elf`,
-          value: `**MMR:**\`${
-            race.mmr
-          }\`\n**Win rate:**\`${displayWinrate(
+          value: `**MMR:**\`${race.mmr}\`\n**Win rate:**\`${displayWinrate(
             race.winrate
-          )}\`\n**W/L:**\`${race.wins}/${
-            race.losses
-          }\`\n**Games:**\`${race.games}\``,
+          )}\`\n**W/L:**\`${race.wins}/${race.losses}\`\n**Games:**\`${
+            race.games
+          }\``,
           inline: true,
         });
       }
       if (race.race === 8) {
         embed.addFields({
           name: `Undead`,
-          value: `**MMR:**\`${
-            race.mmr
-          }\`\n**Win rate:**\`${displayWinrate(
+          value: `**MMR:**\`${race.mmr}\`\n**Win rate:**\`${displayWinrate(
             race.winrate
-          )}\`\n**W/L:**\`${race.wins}/${
-            race.losses
-          }\`\n**Games:**\`${race.games}\``,
+          )}\`\n**W/L:**\`${race.wins}/${race.losses}\`\n**Games:**\`${
+            race.games
+          }\``,
           inline: true,
         });
       }
       if (race.race === 0) {
         embed.addFields({
           name: `Random`,
-          value: `**MMR:**\`${
-            race.mmr
-          }\`\n**Win rate:**\`${displayWinrate(
+          value: `**MMR:**\`${race.mmr}\`\n**Win rate:**\`${displayWinrate(
             race.winrate
-          )}\`\n**W/L:**\`${race.wins}/${
-            race.losses
-          }\`\n**Games:**\`${race.games}\``,
+          )}\`\n**W/L:**\`${race.wins}/${race.losses}\`\n**Games:**\`${
+            race.games
+          }\``,
           inline: true,
         });
       }
@@ -145,7 +135,133 @@ const playerEmbed = async (name, races, indexLeague) => {
       "This player has not played 1v1 games this season."
     );
   }
-};
+}
+
+async function RestGamemodesEmbed(name, gameModes, indexLeague) {
+  try {
+    let embed = new EmbedBuilder();
+    embed.setTitle(name);
+    embed.setColor("#0099ff");
+
+    let tag = name;
+    tag = tag.replace(/#/gi, "%23");
+
+    const response = await fetch(
+      `https://statistic-service.w3champions.com/api/personal-settings/${tag}`
+    );
+
+    const personalSettings = await response.json();
+
+    let image;
+
+    if (personalSettings.profilePicture.isClassic) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/classic/${
+        raceOfPicture["race" + personalSettings.profilePicture.race]
+      }_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+    if (
+      raceOfPicture["race" + personalSettings.profilePicture.race] === "SPECIAL"
+    ) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/specialAvatars/SPECIAL_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+    if (
+      personalSettings.profilePicture.isClassic === false &&
+      raceOfPicture["race" + personalSettings.profilePicture.race] !== "SPECIAL"
+    ) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/${
+        raceOfPicture["race" + personalSettings.profilePicture.race]
+      }_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+
+    embed.setThumbnail(image);
+
+    gameModes.map((gameMode) => {
+      embed.addFields({
+        name: GAMEMODES[gameMode.gameMode.toString()],
+        value: `**MMR:**\`${gameMode.mmr}\`\n**Win rate:**\`${displayWinrate(
+          gameMode.winrate
+        )}\`\n**W/L:**\`${gameMode.wins}/${gameMode.losses}\`\n**Games:**\`${
+          gameMode.games
+        }\``,
+        inline: true,
+      });
+    });
+
+    embed.addFields({
+      name: "View profile in w3champions",
+      value: `[Click here](https://www.w3champions.com/player/${tag})`,
+    });
+
+    return embed;
+  } catch (error) {
+    console.log(error);
+    return message.channel.send(
+      "This player has not played 1v1 games this season."
+    );
+  }
+}
+
+async function atGamemodesEmbed(name, atGameModes, indexLeague) {
+  try {
+    let embed = new EmbedBuilder();
+    embed.setTitle(name);
+    embed.setColor("#0099ff");
+
+    let tag = name;
+    tag = tag.replace(/#/gi, "%23");
+
+    const response = await fetch(
+      `https://statistic-service.w3champions.com/api/personal-settings/${tag}`
+    );
+
+    const personalSettings = await response.json();
+
+    let image;
+
+    if (personalSettings.profilePicture.isClassic) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/classic/${
+        raceOfPicture["race" + personalSettings.profilePicture.race]
+      }_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+    if (
+      raceOfPicture["race" + personalSettings.profilePicture.race] === "SPECIAL"
+    ) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/specialAvatars/SPECIAL_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+    if (
+      personalSettings.profilePicture.isClassic === false &&
+      raceOfPicture["race" + personalSettings.profilePicture.race] !== "SPECIAL"
+    ) {
+      image = `https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/${
+        raceOfPicture["race" + personalSettings.profilePicture.race]
+      }_${personalSettings.profilePicture.pictureId}.jpg`;
+    }
+
+    embed.setThumbnail(image);
+
+    atGameModes.map((at) => {
+      embed.addFields({
+        name: at.playerIds.map((player) => player.name).join(),
+        value: `**MMR:**\`${at.mmr}\`\n**Win rate:**\`${displayWinrate(
+          at.winrate
+        )}\`\n**W/L:**\`${at.wins}/${at.losses}\`\n**Games:**\`${at.games}\``,
+        inline: true,
+      });
+    });
+
+    embed.addFields({
+      name: "View profile in w3champions",
+      value: `[Click here](https://www.w3champions.com/player/${tag})`,
+    });
+
+    return embed;
+  } catch (error) {
+    console.log(error);
+    return message.channel.send(
+      "This player has not played 1v1 games this season."
+    );
+  }
+}
 
 const playerByName = async (name, stats, message, indexLeague) => {
   try {
@@ -536,10 +652,12 @@ const helpEmbed = () => {
 };
 
 module.exports = {
-  playerEmbed,
+  OneVOneEmbed,
   rankingEmbed,
   matchesEmbed,
   helpEmbed,
   matchEmbed,
   playerByName,
+  atGamemodesEmbed,
+  RestGamemodesEmbed,
 };
