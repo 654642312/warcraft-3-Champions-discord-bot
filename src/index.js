@@ -136,6 +136,14 @@ client.on(Events.InteractionCreate, async (interaction) => {
       statsCommand.execute(interaction, player, gameModeSelected);
       return;
     }
+
+    if (interaction.customId.startsWith("details")) {
+      const matchSelected = interaction.values[0];
+      const detailsCommand = client.commands.get("details");
+
+      detailsCommand.execute(interaction, matchSelected);
+      return;
+    }
   }
 });
 
