@@ -37,6 +37,14 @@ const GAMEMODES = {
   [DIRECT_STRIKE_AT_GAMEMODE]: DIRECT_STRIKE_AT_GAMEMODE_NAME,
 }
 
+const RACES = {
+  1: 'HUM',
+  2: 'ORC',
+  4: 'NE',
+  8: 'UD',
+  0: 'RDM'
+}
+
 
 
 function helperBattleTag(player) {
@@ -78,5 +86,6 @@ module.exports = {
   MINIDOTA_AT_GAMEMODE,
   DIRECT_STRIKE_GAMEMODE,
   DIRECT_STRIKE_GAMEMODE_NAME,
-  GAMEMODES
+  GAMEMODES,
+  RACES
 };

@@ -52,7 +52,7 @@ async function participatedInSeason(player) {
   return data.participatedInSeasons;
 }
 
-const getPlayerByName = async (player, server) => {
+const getStatsGamemode = async (player, server) => {
   let response = await fetch(
     `https://statistic-service.w3champions.com/api/players/${player.replace(
       "#",
@@ -249,7 +249,7 @@ module.exports = {
   getMatch,
   getStats,
   getLeagues,
-  getPlayerByName,
+  getStatsGamemode,
   getStatsHeros,
   getScore,
   getPlayerByJustName,

@@ -1,31 +1,49 @@
 const herosImages = require("../../images");
-const { MessageAttachment } = require("discord.js");
+const { AttachmentBuilder } = require("discord.js");
 const Canvas = require("canvas");
 
-const canvasScore = async score => {
-  Canvas.registerFont('MesloLGS NF Regular.ttf', { family: 'MesloLGS NF Regular.ttf' });
-	const canvas = Canvas.createCanvas(900, 450);
-	const ctx = canvas.getContext("2d");
-	const racePlayerOne = "race" + score.racePlayerOne;
-	const racePlayerTwo = "race" + score.racePlayerTwo;			
-	ctx.drawImage(herosImages["background"], 0, 0, canvas.width, canvas.height);
-	ctx.drawImage(herosImages[racePlayerOne], 150, 25, 200, 200);
-	ctx.drawImage(herosImages[racePlayerTwo], 550, 25, 200, 200);
+const canvasScore = async (score) => {
+  Canvas.registerFont("MesloLGS NF Regular.ttf", { family: "Meslo" });
+  
+  const canvas = Canvas.createCanvas(900, 450);
+  const ctx = canvas.getContext("2d");
+  const middle = canvas.width / 2;
 
-	ctx.font = "50px MesloLGS NF Bold.ttf";
-	ctx.fillStyle = "#fff";
-	ctx.fillText(score.namePlayerTwo, canvas.width-250-ctx.measureText(score.namePlayerTwo).width/2, 300);
+  ctx.drawImage(herosImages["background"], 0, 0, canvas.width, canvas.height);
 
-	ctx.font = "50px MesloLGS NF Bold.ttf";
-	ctx.fillStyle = "#fff";
-	ctx.fillText(score.namePlayerOne, canvas.width/3.5-ctx.measureText(score.namePlayerOne).width/2, 300);			
+  const imgSize = 150;
+  const imgY = 60;
+  
+  ctx.drawImage(
+    herosImages["race" + score.racePlayerOne], 
+    225 - (imgSize / 2), 
+    imgY, 
+    imgSize, 
+    imgSize
+  );
+  
+  ctx.drawImage(
+    herosImages["race" + score.racePlayerTwo], 
+    675 - (imgSize / 2), 
+    imgY, 
+    imgSize, 
+    imgSize
+  );
 
-	ctx.font = "50px MesloLGS NF Bold.ttf";
-	ctx.fillStyle = "#fff";
-	ctx.fillText(score.scorePlayerOne + " - " + score.scorePlayerTwo, canvas.width/2-ctx.measureText(score.scorePlayerOne + " - " + score.scorePlayerTwo).width/2, 350);
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center"; 
 
-	const attachment = new MessageAttachment(canvas.toBuffer(), "image.png");
-	return attachment;
+  ctx.font = "50px Meslo";
+  const namesY = 280; 
+  ctx.fillText(score.namePlayerOne, 225, namesY);
+  ctx.fillText(score.namePlayerTwo, 675, namesY);
+
+  ctx.font = "bold 65px Meslo"; 
+  const scoreText = `${score.scorePlayerOne} - ${score.scorePlayerTwo}`;
+  ctx.fillText(scoreText, middle, 380);
+
+  const attachment = new AttachmentBuilder(canvas.toBuffer(), "image.png");
+  return attachment;
 };
 
 module.exports = canvasScore;

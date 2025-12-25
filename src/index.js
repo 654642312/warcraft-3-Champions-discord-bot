@@ -84,7 +84,6 @@ async function deployCommands() {
   const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
   console.log(`Started refreshing application slash commands globally.`);
-
   const data = await rest.put(
     Routes.applicationCommands("751448461877968960"),
     { body: commands }
@@ -98,7 +97,11 @@ client.on(Events.ClientReady, async () => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (interaction.commandName === "stats" && interaction.isAutocomplete()) {
+  if (
+    (interaction.commandName === "stats" ||
+      interaction.commandName === "score") &&
+    interaction.isAutocomplete()
+  ) {
     const focusedValue = interaction.options.getFocused();
 
     if (focusedValue.length < 3) {
