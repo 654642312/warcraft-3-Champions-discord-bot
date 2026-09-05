@@ -31,7 +31,7 @@ const getStats = async (player, server) => {
   return data;
 };
 
-async function findW3CPlayer(player, server) {
+async function findW3CPlayer(player, server = 20) {
   const response = await fetch(
     `https://statistic-service.w3champions.com/api/ladder/search?gateWay=${server}&searchFor=${player}&season=${process.env.SEASON}&gameMode=1`
   );
@@ -43,6 +43,22 @@ async function findW3CPlayer(player, server) {
     };
   });
 }
+
+const getPlayerByName = async (player) => {
+  let response = await fetch(
+    `https://statistic-service.w3champions.com/api/players/${player.replace(
+      "#",
+      "%23"
+    )}/game-mode-stats?gateWay=20&season=${process.env.SEASON}`
+  );
+
+  let data = await response.json();
+  if (data.length === 0) return null;
+
+  const races = data;
+
+  return races;
+};
 
 async function participatedInSeason(player) {
   const response = await fetch(
@@ -255,4 +271,5 @@ module.exports = {
   getPlayerByJustName,
   findW3CPlayer,
   participatedInSeason,
+  getPlayerByName,
 };

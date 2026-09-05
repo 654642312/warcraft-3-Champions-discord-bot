@@ -71,9 +71,8 @@ module.exports = {
         gameModeSelected ||
         ONE_V_ONE_GAMEMODE;
       let indexLeague = 2;
-      const { stats, gameModeWithout4v4AtDuplicate: gameModes } =
-        await findStatsAndGamemode(player, gameMode);
 
+      const { stats, gameModeWithoutDuplicate: gameModes } = await findStatsAndGamemode(player, gameMode);
       let embed = null;
       if (gameMode === ONE_V_ONE_GAMEMODE) {
         embed = await OneVOneEmbed(player, stats, indexLeague);
@@ -85,7 +84,7 @@ module.exports = {
         embed = await RestGamemodesEmbed(player, stats, indexLeague);
       }
       const seasons = await participatedInSeason(player);
-
+      
       const selectorMode = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
           .setCustomId(`stats_mode_${player}`)
@@ -101,7 +100,7 @@ module.exports = {
       const selectorSesson = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
           .setCustomId(`season_${player}`)
-          .setPlaceholder("Season 22")
+          .setPlaceholder(`Season ${process.env.SEASON}`)
           .addOptions(
             seasons.map((season) => ({
               label: season.id.toString(),

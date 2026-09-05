@@ -7,10 +7,11 @@ const showStats = async (player, server) => {
 };
 
 async function findStatsAndGamemode(playerName, gameMode) {
+  gameMode = Number(gameMode);
   const gameModeStats = await getPlayerByName(playerName);
-
-  const stats = gameModeStats.filter((d) => d.gameMode == gameMode);
-  const gameModes = gameModeStats.filter((d) => d.gameMode != gameMode);
+  const stats = gameModeStats.filter((d) => d.gameMode === gameMode);
+  const gameModes = gameModeStats.filter((d) => d.gameMode !== gameMode);
+  
   const gameModeWithoutDuplicate = gameModes.filter(
     (value, index, self) =>
       index === self.findIndex((t) => t.gameMode === value.gameMode)
